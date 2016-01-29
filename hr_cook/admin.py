@@ -21,7 +21,7 @@ class CookProductInline(admin.TabularInline):
 
 
 class CookSessionAdmin(admin.ModelAdmin):
-
+    list_display = ('name', 'date', 'warehouse')
     readonly_fields = ('created_by',)
     inlines = [
         CookIngredientInline,

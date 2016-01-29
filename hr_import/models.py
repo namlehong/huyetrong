@@ -5,10 +5,12 @@ from django.db import models
 from hr_product.models import BaseProduct
 from hr_warehouse.models import WarehouseLog, Warehouse
 from hr_cash.models import CashLog
+import datetime
 
 
 class ProductImport(models.Model):
     warehouse = models.ForeignKey(Warehouse)
+    date = models.DateField(blank=True, null=True, default=datetime.date.today)
     product = models.ForeignKey(BaseProduct)
     price = models.IntegerField()
     quantity = models.FloatField()

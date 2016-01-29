@@ -15,9 +15,13 @@ class SaleMan(models.Model):
         return self.name
 
 
+import datetime
+
+
 class SaleLog(models.Model):
     sale_man = models.ForeignKey(SaleMan)
     warehouse = models.ForeignKey(Warehouse)
+    date = models.DateField(blank=True, null=True, default=datetime.date.today)
     product = models.ForeignKey(BaseProduct)
     quantity = models.IntegerField()
     price = models.IntegerField()
