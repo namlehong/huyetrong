@@ -19,10 +19,9 @@
 <h1>Tổng quan</h1>
 
 <ul>
-    {{ product_summary }}
     {% for i in product_summary %}
     <li>
-        <strong>{{ i.name }}</strong>
+        <strong>{{ i.product__name }}</strong>
         <ul>
             <li>Sản lượng: {{ i.quantity_sum }}</li>
             <li> Doanh số: {{ i.profit }}</li>
@@ -31,7 +30,13 @@
     {% endfor %}
 </ul>
 
-{{ available_product }}
+<h2>Kho</h2>
+
+<ul>
+    {% for i in warehause_summary %}
+    <li>{{ i.product__name }}: {{ i.count }} ({{ i.product__unit }})</li>
+    {% endfor %}
+</ul>
 
 <div class="char-wrap">
     <h2>Sản lượng bán theo ngày</h2>

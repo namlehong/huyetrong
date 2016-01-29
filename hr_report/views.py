@@ -3,6 +3,7 @@ from django.db import connection
 from django.shortcuts import render
 from django.db.models import Sum, F
 from hr_sales.models import SaleLog
+from hr_warehouse.models import WarehouseLog
 import datetime
 import json
 import operator
@@ -17,10 +18,16 @@ def format_date(x):
 def detail(request, year, month):
     truncate_date = connection.ops.date_trunc_sql('month', 'created')
 
+    warehause_summary = WarehouseLog.objects.filter(
+        created_at__year=year, created_at__month=month
+    ).values('product', 'product__name', 'product__unit').annotate(
+        count=Sum('quantity')
+    )
+
     product_summary = SaleLog.objects.filter(
         date__year=year, date__month=month
-    ).values('product').annotate(
-        name=F('product__name'),
+    ).values('product', 'product__name').annotate(
+        # name=F('product__name'),
         quantity_sum=Sum('quantity'),
         profit=Sum(F('quantity')*F('price'))
     ).order_by('-product')
@@ -88,6 +95,7 @@ def detail(request, year, month):
     people_collector['profit'].append([sum(item) for item in zip(*people_collector['profit'])])
 
     return render(request, 'hr_report/sale.html', {
+        'warehause_summary': warehause_summary,
         'product_summary': product_summary,
         'date_summary': date_summary,
         'available_product': available_product,
