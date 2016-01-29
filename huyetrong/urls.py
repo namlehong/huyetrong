@@ -18,4 +18,5 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^', include(admin.site.urls)),
+    url(r'^report/(?P<year>[0-9]{4})/(?P<month>[0-9]{1,2})', 'hr_report.views.detail')
 ]

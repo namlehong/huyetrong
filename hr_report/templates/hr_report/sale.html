@@ -1,0 +1,229 @@
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sale Report</title>
+
+    <style>
+        .char-wrap {
+            margin: 10px;
+        }
+        .char-wrap canvas {
+            width: 100%;
+            height: 400px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Tổng quan</h1>
+
+<ul>
+    {% for i in product_summary %}
+    <li>
+        <strong>{{ i.name }}</strong>
+        <ul>
+            <li>Sản lượng: {{ i.quantity_sum|intcomma }}</li>
+            <li> Doanh số: {{ i.profit|intcomma }}</li>
+        </ul>
+    </li>
+    {% endfor %}
+</ul>
+
+{{ available_product }}
+
+<div class="char-wrap">
+    <h2>Sản lượng bán theo ngày</h2>
+    <canvas id="qtyChart"></canvas>
+
+</div>
+
+<div class="char-wrap">
+    <h2>Doanh thu theo ngày</h2>
+    <canvas id="profitChart"></canvas>
+</div>
+
+<div class="char-wrap">
+    <h2>Sản lượng bán theo nhân viên</h2>
+    <canvas id="qtyChartPeople"></canvas>
+
+</div>
+
+<div class="char-wrap">
+    <h2>Doanh thu theo nhân viên</h2>
+    <canvas id="profitChartPeople"></canvas>
+</div>
+
+<script src="/static/hr_report/Chart.min.js"></script>
+<script>
+    var qtyChart = document.getElementById("qtyChart").getContext("2d");
+    var profitChart = document.getElementById("profitChart").getContext("2d");
+
+    var qtyChartPeople = document.getElementById("qtyChartPeople").getContext("2d");
+    var profitChartPeople = document.getElementById("profitChartPeople").getContext("2d");
+
+    var date_collector = {{ date_collector|safe }};
+    var people_collector = {{ people_collector|safe }}
+
+    var qtyData = {
+        labels: date_collector.label,
+        datasets: [
+            {
+                label: "Total",
+                fillColor: "rgba(247,70,74,0.0)",
+                strokeColor: "rgba(247,70,74,1)",
+                pointColor: "rgba(247,70,74,1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(247,70,74,1)",
+                data: date_collector.qty[2]
+            },
+            {
+                label: "My First dataset",
+                fillColor: "rgba(220,220,220,0.2)",
+                strokeColor: "rgba(220,220,220,1)",
+                pointColor: "rgba(220,220,220,1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(220,220,220,1)",
+                data: date_collector.qty[0]
+            },
+            {
+                label: "My Second dataset",
+                fillColor: "rgba(151,187,205,0.2)",
+                strokeColor: "rgba(151,187,205,1)",
+                pointColor: "rgba(151,187,205,1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(151,187,205,1)",
+                data: date_collector.qty[1]
+            }
+
+        ]
+    };
+
+    var profitData = {
+        labels: date_collector.label,
+        datasets: [
+            {
+                label: "Total",
+                fillColor: "rgba(247,70,74,0.0)",
+                strokeColor: "rgba(247,70,74,1)",
+                pointColor: "rgba(247,70,74,1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(247,70,74,1)",
+                data: date_collector.profit[2]
+            },
+            {
+                label: "My First dataset",
+                fillColor: "rgba(220,220,220,0.2)",
+                strokeColor: "rgba(220,220,220,1)",
+                pointColor: "rgba(220,220,220,1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(220,220,220,1)",
+                data: date_collector.profit[0]
+            },
+            {
+                label: "My Second dataset",
+                fillColor: "rgba(151,187,205,0.2)",
+                strokeColor: "rgba(151,187,205,1)",
+                pointColor: "rgba(151,187,205,1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(151,187,205,1)",
+                data: date_collector.profit[1]
+            }
+
+        ]
+    };
+
+    new Chart(qtyChart).Line(qtyData, {
+        bezierCurve: false,
+    });
+
+    new Chart(profitChart).Line(profitData, {
+        bezierCurve: false,
+    });
+
+    var qtyDataPeople = {
+        labels: people_collector.label,
+        datasets: [
+            {
+                label: "Total",
+                fillColor: "rgba(247,70,74,0.2)",
+                strokeColor: "rgba(247,70,74,1)",
+                pointColor: "rgba(247,70,74,1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(247,70,74,1)",
+                data: people_collector.qty[2]
+            },
+            {
+                label: "My First dataset",
+                fillColor: "rgba(220,220,220,0.2)",
+                strokeColor: "rgba(220,220,220,1)",
+                pointColor: "rgba(220,220,220,1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(220,220,220,1)",
+                data: people_collector.qty[0]
+            },
+            {
+                label: "My Second dataset",
+                fillColor: "rgba(151,187,205,0.2)",
+                strokeColor: "rgba(151,187,205,1)",
+                pointColor: "rgba(151,187,205,1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(151,187,205,1)",
+                data: people_collector.qty[1]
+            }
+
+        ]
+    };
+
+    var profitDataPeople = {
+        labels: people_collector.label,
+        datasets: [
+            {
+                label: "Total",
+                fillColor: "rgba(247,70,74,0.2)",
+                strokeColor: "rgba(247,70,74,1)",
+                pointColor: "rgba(247,70,74,1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(247,70,74,1)",
+                data: people_collector.profit[2]
+            },
+            {
+                label: "My First dataset",
+                fillColor: "rgba(220,220,220,0.2)",
+                strokeColor: "rgba(220,220,220,1)",
+                pointColor: "rgba(220,220,220,1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(220,220,220,1)",
+                data: people_collector.profit[0]
+            },
+            {
+                label: "My Second dataset",
+                fillColor: "rgba(151,187,205,0.2)",
+                strokeColor: "rgba(151,187,205,1)",
+                pointColor: "rgba(151,187,205,1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(151,187,205,1)",
+                data: people_collector.profit[1]
+            }
+
+        ]
+    };
+
+    new Chart(qtyChartPeople).Bar(qtyDataPeople);
+    new Chart(profitChartPeople).Bar(profitDataPeople);
+</script>
+</body>
+</html>
